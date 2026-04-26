@@ -1,0 +1,18 @@
+name: Accessibility check (basic)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  voidly-check:
+    runs-on: ubuntu-latest
+    name: Verify domains are reachable in censored countries
+    steps:
+      - name: Voidly Accessibility Check
+        uses: voidly-ai/voidly-check-action@v1
+        with:
+          domains: 'example.com,api.example.com'
+          countries: 'IR,RU,CN'
+          fail-on-blocked: false

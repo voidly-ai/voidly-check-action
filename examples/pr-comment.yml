@@ -1,0 +1,55 @@
+name: Accessibility check (PR comment)
+
+# Runs on every PR and posts the accessibility report as a sticky comment.
+# Useful when a PR could change DNS, CDN config, or hosting providers.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Voidly Accessibility Check
+        id: voidly
+        uses: voidly-ai/voidly-check-action@v1
+        with:
+          domains: 'example.com,api.example.com'
+          countries: 'IR,RU,CN,UA'
+          fail-on-blocked: false
+
+      - name: Render PR comment
+        id: comment-body
+        run: |
+          {
+            echo 'body<<EOF'
+            echo '## Voidly accessibility report'
+            echo ''
+            echo "Total checks: **${{ steps.voidly.outputs.total-checks }}**"
+            echo "Blocked: **${{ steps.voidly.outputs.blocked-count }}**"
+            echo ''
+            if [ "${{ steps.voidly.outputs.blocked-count }}" != "0" ]; then
+              echo 'Blocked results:'
+              echo '```json'
+              echo '${{ steps.voidly.outputs.blocked-domains }}'
+              echo '```'
+              echo ''
+              echo "Most-affected country report: ${{ steps.voidly.outputs.report-url }}"
+            else
+              echo '_No blocking detected in any target country._'
+            fi
+            echo ''
+            echo "_Powered by [Voidly](https://voidly.ai)._"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Post comment to PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: voidly-accessibility
+          message: ${{ steps.comment-body.outputs.body }}

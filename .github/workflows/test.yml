@@ -1,0 +1,65 @@
+name: Self-test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  selftest-no-fail:
+    runs-on: ubuntu-latest
+    name: Action runs against voidly.ai without failing
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run action against itself
+        id: voidly
+        uses: ./
+        with:
+          domains: 'voidly.ai,api.voidly.ai'
+          countries: 'IR,RU,CN'
+          fail-on-blocked: false
+      - name: Verify outputs are populated
+        run: |
+          echo "blocked-count=${{ steps.voidly.outputs.blocked-count }}"
+          echo "total-checks=${{ steps.voidly.outputs.total-checks }}"
+          test -n "${{ steps.voidly.outputs.total-checks }}" || { echo "::error::total-checks output is empty"; exit 1; }
+          test "${{ steps.voidly.outputs.total-checks }}" -ge 1 || { echo "::error::total-checks should be >= 1"; exit 1; }
+
+  selftest-json-format:
+    runs-on: ubuntu-latest
+    name: JSON report format works
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          domains: 'voidly.ai'
+          countries: 'IR'
+          report-format: json
+          fail-on-blocked: false
+
+  selftest-bad-input:
+    runs-on: ubuntu-latest
+    name: Action rejects empty domains input
+    steps:
+      - uses: actions/checkout@v4
+      - id: bad
+        continue-on-error: true
+        uses: ./
+        with:
+          domains: ''
+          countries: 'IR'
+      - name: Verify it failed
+        run: |
+          if [ "${{ steps.bad.outcome }}" != "failure" ]; then
+            echo "::error::expected step to fail with empty domains, got ${{ steps.bad.outcome }}"
+            exit 1
+          fi
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    name: shellcheck entrypoint
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+      - run: shellcheck entrypoint.sh

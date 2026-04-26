@@ -1,0 +1,41 @@
+name: Accessibility monitor (scheduled)
+
+# Runs every day at 09:00 UTC and posts a Slack alert if anything is blocked.
+# Drop SLACK_WEBHOOK_URL into your repo secrets to enable the alert step.
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Voidly Accessibility Check
+        id: voidly
+        uses: voidly-ai/voidly-check-action@v1
+        with:
+          domains: 'example.com,api.example.com,docs.example.com,cdn.example.com'
+          countries: 'IR,RU,CN,BY,TM,VE,UZ'
+          fail-on-blocked: false
+          report-format: markdown
+
+      - name: Print summary
+        run: |
+          echo "Total checks: ${{ steps.voidly.outputs.total-checks }}"
+          echo "Blocked:      ${{ steps.voidly.outputs.blocked-count }}"
+          echo "Top country:  ${{ steps.voidly.outputs.report-url }}"
+
+      - name: Alert on Slack if blocked
+        if: steps.voidly.outputs.blocked-count != '0' && env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -sS -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d "$(jq -n \
+              --arg n "${{ steps.voidly.outputs.blocked-count }}" \
+              --arg url "${{ steps.voidly.outputs.report-url }}" \
+              --arg run "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              '{text: ":rotating_light: Voidly: \($n) blocked result(s) detected. \($url)\nRun: \($run)"}')"

@@ -1,0 +1,70 @@
+name: 'Voidly Accessibility Check'
+description: 'Verify your services are accessible from censored countries. Powered by Voidly censorship intelligence (19.6M+ live samples).'
+author: 'Voidly'
+branding:
+  icon: 'globe'
+  color: 'blue'
+
+inputs:
+  domains:
+    description: 'Comma-separated list of domains to check (e.g. "mycompany.com,api.mycompany.com"). Up to 50 domains.'
+    required: true
+  countries:
+    description: 'Comma-separated ISO 3166-1 alpha-2 country codes (e.g. "IR,RU,CN,UA"). Defaults to a high-risk set.'
+    required: false
+    default: 'IR,RU,CN'
+  fail-on-blocked:
+    description: 'Fail the workflow when any domain is blocked in any target country. Set to "false" to warn only.'
+    required: false
+    default: 'false'
+  report-format:
+    description: 'Report format written to GITHUB_STEP_SUMMARY: "markdown" or "json".'
+    required: false
+    default: 'markdown'
+  api-key:
+    description: 'Optional Voidly API key for higher rate limits. Public endpoint works without one.'
+    required: false
+    default: ''
+  api-base-url:
+    description: 'Override the API base URL (advanced). Defaults to https://api.voidly.ai.'
+    required: false
+    default: 'https://api.voidly.ai'
+
+outputs:
+  blocked-count:
+    description: 'Total number of (domain, country) pairs that returned status=blocked.'
+    value: ${{ steps.check.outputs.blocked-count }}
+  total-checks:
+    description: 'Total number of (domain, country) pairs evaluated.'
+    value: ${{ steps.check.outputs.total-checks }}
+  blocked-domains:
+    description: 'JSON array of blocked results: [{"domain":"x","country":"IR","status":"blocked"}, ...]'
+    value: ${{ steps.check.outputs.blocked-domains }}
+  report-url:
+    description: 'Link to the full Voidly report for the most-affected country, if any.'
+    value: ${{ steps.check.outputs.report-url }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Verify dependencies
+      shell: bash
+      run: |
+        command -v curl >/dev/null 2>&1 || { echo "::error::curl is required but not installed"; exit 1; }
+        command -v jq >/dev/null 2>&1 || {
+          echo "::warning::jq not found, installing..."
+          sudo apt-get update -qq && sudo apt-get install -y -qq jq || {
+            echo "::error::failed to install jq"; exit 1;
+          }
+        }
+    - name: Run accessibility check
+      id: check
+      shell: bash
+      env:
+        INPUT_DOMAINS: ${{ inputs.domains }}
+        INPUT_COUNTRIES: ${{ inputs.countries }}
+        INPUT_FAIL_ON_BLOCKED: ${{ inputs.fail-on-blocked }}
+        INPUT_REPORT_FORMAT: ${{ inputs.report-format }}
+        INPUT_API_KEY: ${{ inputs.api-key }}
+        INPUT_API_BASE_URL: ${{ inputs.api-base-url }}
+      run: bash "${GITHUB_ACTION_PATH}/entrypoint.sh"
