@@ -111,7 +111,7 @@ Checked 2 domain(s) across 2 country/countries — 4 total checks.
 
 Most-affected country: CN full report
 
-Powered by Voidly — 19.6M+ live censorship samples across 119 countries.
+Powered by Voidly — 19.6M+ live censorship samples across 130 countries.
 ```
 
 When everything is reachable:

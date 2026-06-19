@@ -185,7 +185,7 @@ else
       echo "Most-affected country: [$TOP_COUNTRY full report]($REPORT_URL)"
     fi
     echo ""
-    echo "_Powered by [Voidly](https://voidly.ai) — 19.6M+ live censorship samples across 119 countries. CC BY 4.0._"
+    echo "_Powered by [Voidly](https://voidly.ai) — 19.6M+ live censorship samples across 130 countries. CC BY 4.0._"
   } >> "$SUMMARY_TARGET"
 fi
 
