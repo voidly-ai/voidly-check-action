@@ -1,0 +1,11 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Voidly Accessibility Check Action",
+  "description": "GitHub Action for looking up domain accessibility through Voidly Atlas evidence. This is an API lookup, not an in-country probe or MCP server.",
+  "excludeFolders": [
+    ".github"
+  ],
+  "excludeFiles": [
+    "CHANGELOG.md"
+  ]
+}
