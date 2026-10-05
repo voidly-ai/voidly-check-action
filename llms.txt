@@ -1,0 +1,16 @@
+# Voidly Accessibility Check — GitHub Action
+
+> A GitHub Action that looks up domain accessibility through Voidly Atlas evidence. It is not a live probe in each target country and is not an MCP server.
+
+## Documentation
+
+- [README and workflow quickstart](https://github.com/voidly-ai/voidly-check-action/blob/main/README.md): inputs, outputs, limitations, and result interpretation.
+- [Action metadata](https://github.com/voidly-ai/voidly-check-action/blob/main/action.yml): exact input defaults and output names.
+- [Example workflow](https://github.com/voidly-ai/voidly-check-action/blob/main/examples/basic-check.yml): example GitHub Actions use.
+- [Voidly methodology](https://voidly.ai/methodology) and [open data](https://voidly.ai/data): evidence and provenance.
+
+## MCP access
+
+- [Voidly Atlas MCP server](https://github.com/voidly-ai/atlas-mcp) is a separate interface for agent clients. Its dedicated hosted Streamable HTTP endpoint is `https://atlas-mcp.voidly.ai/mcp`.
+
+`unknown` means insufficient evidence; it does not prove reachability. An `error` result also does not mean reachable. Inspect the full workflow summary before using an output as a release gate.
