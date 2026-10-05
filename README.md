@@ -1,5 +1,7 @@
 # Voidly Accessibility Check — GitHub Action
 
+[![GitHub Action v1](https://img.shields.io/badge/GitHub%20Action-v1-2088FF)](https://github.com/voidly-ai/voidly-check-action/tree/v1)
+
 Add a censorship-data lookup to a GitHub Actions workflow. The Action sends the domains and country codes you choose to the [Voidly Accessibility API](https://voidly.ai/api-docs), writes a step summary, and exposes the returned statuses as workflow outputs.
 
 **Interpretation:** A `blocked` result reflects the API's available evidence. `unknown` means there is not enough evidence for that domain and country. This Action is an API lookup, not a fresh network test from the target country. Review the [methodology](https://voidly.ai/methodology) and underlying evidence before using a result as a release gate.
