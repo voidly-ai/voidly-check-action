@@ -90,7 +90,6 @@ trap 'rm -f "$RESULTS_FILE"' EXIT
 
 # Aggregate ndjson: one {domain, country, status, methods, accessibilityScore}
 # object per line. We assemble the final report from this.
-> "$RESULTS_FILE"
 
 for country in "${COUNTRIES[@]}"; do
   COUNTRY_UPPER=$(printf '%s' "$country" | tr '[:lower:]' '[:upper:]')
@@ -113,7 +112,7 @@ for country in "${COUNTRIES[@]}"; do
     "$API_BASE_URL/v1/accessibility/batch" || echo "000")
 
   if [ "$HTTP_CODE" != "200" ]; then
-    BODY=$(cat "$RESPONSE" 2>/dev/null | head -c 500 || true)
+    BODY=$(head -c 500 "$RESPONSE" 2>/dev/null || true)
     warn "API returned HTTP $HTTP_CODE for country=$COUNTRY_UPPER: $BODY"
     # Emit one synthetic 'error' row per domain so the report still shows the country.
     for d in "${DOMAINS[@]}"; do

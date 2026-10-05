@@ -1,5 +1,5 @@
 name: 'Voidly Accessibility Check'
-description: 'Verify your services are accessible from censored countries. Powered by Voidly censorship intelligence (19.6M+ live samples).'
+description: 'Look up domain accessibility using Voidly censorship evidence.'
 author: 'Voidly'
 branding:
   icon: 'globe'

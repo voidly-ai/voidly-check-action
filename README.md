@@ -44,6 +44,17 @@ Only submit domains you are comfortable sharing with the API. Voidly-original da
 Code license: [MIT](LICENSE).
 
 
+## MCP clients
+
+This GitHub Action runs in a workflow; it is not an MCP server. For Atlas
+lookup tools in Cursor, VS Code, or another MCP client, use the separate
+[Voidly Atlas MCP server](https://github.com/voidly-ai/atlas-mcp). Its dedicated
+hosted Streamable HTTP endpoint is `https://atlas-mcp.voidly.ai/mcp`. The
+server's README documents local stdio setup; remote configuration depends on
+the MCP client. The Action's workflow outputs and the server's tools are
+separate interfaces.
+
+
 ## Trademarks
 
 Voidly™ and Voidpay™ are trademarks of Ai Analytics LLC. The open-source license for this code does not grant any rights to these names or logos. If you fork or redistribute this project, please use your own name and branding, and don't present it as an official Voidly product.
