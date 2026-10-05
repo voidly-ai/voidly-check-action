@@ -42,3 +42,8 @@ The current script displays API failures as `error` rows. A zero blocked count t
 Only submit domains you are comfortable sharing with the API. Voidly-original data and upstream measurements can have different license terms; see [Open Data](https://voidly.ai/data).
 
 Code license: [MIT](LICENSE).
+
+
+## Trademarks
+
+Voidly™ and Voidpay™ are trademarks of Ai Analytics LLC. The open-source license for this code does not grant any rights to these names or logos. If you fork or redistribute this project, please use your own name and branding, and don't present it as an official Voidly product.
